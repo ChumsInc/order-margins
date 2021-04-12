@@ -1,6 +1,6 @@
 {
   "name": "order-margins",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Report of order margins",
   "main": "index.js",
   "dependencies": {
