@@ -15,7 +15,7 @@ export const SET_PAGE = 'SET_PAGE';
 export const SET_ROWS_PER_PAGE = 'SET_ROWS_PER_PAGE';
 export const SET_FILTER = 'SET_FILTER';
 
-export const URL_ORDERS = '/node-dev/sales/orders/margins/:company/:maxMargin';
+export const URL_ORDERS = '/api/sales/orders/margins/:company/:maxMargin';
 export const URL_ORDER_LINK = '/reports/account/salesorder/?company=:CompanyCode&salesorderno=:SalesOrderNo&view=margins';
 
 export const PROMO_CUSTOMERS = ['PROMOS', 'SAMPLES', 'CHUMS', 'TEST'];

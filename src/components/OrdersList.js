@@ -6,7 +6,7 @@ import SortableTable from "../common-components/SortableTable";
 import ProgressBar from "chums-components/src/ProgressBar";
 import formatDate from 'date-fns/format';
 import numeral from 'numeral';
-import {PROMO_CUSTOMERS, URL_ORDER_LINK} from "../constants";
+import {URL_ORDER_LINK} from "../constants";
 import {companyCode} from "../utils";
 import classNames from 'classnames';
 
@@ -79,6 +79,12 @@ const fieldList = [
         className: 'right'
     },
     {
+        field: 'ItemTotal',
+        title: 'Item Total',
+        render: ({ItemTotal}) => numeral(ItemTotal).format('$0,0.00'),
+        className: 'right'
+    },
+    {
         field: 'CostTotal',
         title: 'Cost Total',
         render: ({CostTotal}) => numeral(CostTotal).format('$0,0.00'),
@@ -145,9 +151,10 @@ class OrdersList extends Component {
                 || reFilter.test(createdBy(row)))
             .filter(row => !filterEDI || row.isEDI !== 'Y')
             .filter(row => !filterPromo || row.isPromo === 0);
-        const totals = {OrderTotal: 0, CostTotal: 0, Revenue: 0, Margin: 0};
+        const totals = {OrderTotal: 0, ItemTotal: 0, CostTotal: 0, Revenue: 0, Margin: 0};
         data.forEach(row => {
             totals.OrderTotal += row.OrderTotal;
+            totals.ItemTotal += row.ItemTotal;
             totals.CostTotal += row.CostTotal;
             totals.Revenue += row.Revenue;
         });
