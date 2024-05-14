@@ -2,7 +2,6 @@ import React, {Fragment, useEffect, useState} from 'react';
 import {useSelector} from 'react-redux';
 import {ProgressBar, SortableTable, SortableTableField, TablePagination} from "chums-components";
 import numeral from 'numeral';
-import {URL_ORDER_LINK} from "../constants";
 import classNames from 'classnames';
 import {customerKey} from "../ducks/orders/utils";
 import {OrderTotal, SalesOrderMarginRow} from "../types";
@@ -11,6 +10,8 @@ import dayjs from "dayjs";
 import Decimal from "decimal.js";
 import {selectFilteredList, selectLoading, selectSort, setSort} from "../ducks/orders";
 import {useAppDispatch} from "../app/configureStore";
+
+export const URL_ORDER_LINK = '/reports/account/salesorder/?company=chums&salesorderno=:SalesOrderNo&view=margins';
 
 const createdBy = ({CreatedBy, b2bUserID, b2bUserName, LastUpdatedBy}: SalesOrderMarginRow) => {
     if (b2bUserID) {
@@ -62,8 +63,18 @@ const fieldList: SortableTableField<SalesOrderMarginRow>[] = [
     {field: 'ARDivisionNo', title: 'Account', sortable: true, render: customerKey},
     {field: 'BillToName', title: 'Customer Name', sortable: true,},
     {field: 'CreatedBy', title: 'User', sortable: true, render: createdBy},
-    {field: 'OrderDate', title: 'Order Date', sortable: true, render: (row) => dayjs(row.OrderDate).format('MM-DD-YYYY')},
-    {field: 'ShipExpireDate', title: 'Ship Date', sortable: true, render: (row) => dayjs(row.ShipExpireDate).format('MM-DD-YYYY')},
+    {
+        field: 'OrderDate',
+        title: 'Order Date',
+        sortable: true,
+        render: (row) => dayjs(row.OrderDate).format('MM-DD-YYYY')
+    },
+    {
+        field: 'ShipExpireDate',
+        title: 'Ship Date',
+        sortable: true,
+        render: (row) => dayjs(row.ShipExpireDate).format('MM-DD-YYYY')
+    },
     {
         field: 'OrderTotal',
         title: 'Order Total',
@@ -85,8 +96,20 @@ const fieldList: SortableTableField<SalesOrderMarginRow>[] = [
         render: ({CostTotal}) => numeral(CostTotal).format('$0,0.00'),
         className: 'text-end'
     },
-    {field: 'Revenue', title: 'Revenue', sortable: true, render: ({Revenue}) => numeral(Revenue).format('$0,0.00'), className: 'text-end'},
-    {field: 'Margin', title: 'Margin', sortable: true, render: ({Margin}) => numeral(Margin).format('0.0%'), className: 'text-end'},
+    {
+        field: 'Revenue',
+        title: 'Revenue',
+        sortable: true,
+        render: ({Revenue}) => numeral(Revenue).format('$0,0.00'),
+        className: 'text-end'
+    },
+    {
+        field: 'Margin',
+        title: 'Margin',
+        sortable: true,
+        render: ({Margin}) => numeral(Margin).format('0.0%'),
+        className: 'text-end'
+    },
 ];
 
 const isBelowCost = (row: SalesOrderMarginRow) => {
@@ -105,8 +128,8 @@ const rowClassName = (row: SalesOrderMarginRow) => {
     }
 }
 
-const calcTotals = (list:SalesOrderMarginRow[]):OrderTotal => {
-    const totals:OrderTotal = {OrderTotal: 0, ItemTotal: 0, CostTotal: 0, Revenue: 0, Margin: 0};
+const calcTotals = (list: SalesOrderMarginRow[]): OrderTotal => {
+    const totals: OrderTotal = {OrderTotal: 0, ItemTotal: 0, CostTotal: 0, Revenue: 0, Margin: 0};
 
     list.forEach(row => {
         totals.OrderTotal = new Decimal(totals.OrderTotal).add(row.OrderTotal).toString();
@@ -120,20 +143,20 @@ const calcTotals = (list:SalesOrderMarginRow[]):OrderTotal => {
     return totals;
 }
 
-const OrderListTotal = ({total}: { total:OrderTotal }) => {
+const OrderListTotal = ({total}: { total: OrderTotal }) => {
     return (
         <tfoot>
-            <tr>
-                <th colSpan={12} className="text-end">...</th>
-            </tr>
-            <tr>
-                <th colSpan={7} scope="row" className="text-end">Total</th>
-                <td className="text-end">{numeral(total.OrderTotal).format('$0,0.00')}</td>
-                <td className="text-end">{numeral(total.ItemTotal).format('$0,0.00')}</td>
-                <td className="text-end">{numeral(total.CostTotal).format('$0,0.00')}</td>
-                <td className="text-end">{numeral(total.Revenue).format('$0,0.00')}</td>
-                <td className="text-end">{numeral(total.Margin).format('0.0%')}</td>
-            </tr>
+        <tr>
+            <th colSpan={12} className="text-end">...</th>
+        </tr>
+        <tr>
+            <th colSpan={7} scope="row" className="text-end">Total</th>
+            <td className="text-end">{numeral(total.OrderTotal).format('$0,0.00')}</td>
+            <td className="text-end">{numeral(total.ItemTotal).format('$0,0.00')}</td>
+            <td className="text-end">{numeral(total.CostTotal).format('$0,0.00')}</td>
+            <td className="text-end">{numeral(total.Revenue).format('$0,0.00')}</td>
+            <td className="text-end">{numeral(total.Margin).format('0.0%')}</td>
+        </tr>
         </tfoot>
     )
 }
@@ -157,8 +180,6 @@ export default function OrdersList() {
     }
 
 
-
-
     return (
         <>
             {loading && <ProgressBar striped={true} className="mb-1"/>}
@@ -167,7 +188,7 @@ export default function OrdersList() {
                            rowClassName={rowClassName}
                            currentSort={sort}
                            onChangeSort={(sort) => dispatch(setSort(sort))}
-                           tfoot={<OrderListTotal total={totals} />}
+                           tfoot={<OrderListTotal total={totals}/>}
             />
             <TablePagination page={page} onChangePage={setPage}
                              rowsPerPage={rowsPerPage} onChangeRowsPerPage={rowsPerPageChangeHandler}
