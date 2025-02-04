@@ -1,19 +1,16 @@
 import React, {Fragment, useEffect, useState} from 'react';
 import {useSelector} from 'react-redux';
+import {ProgressBar, SortableTable, SortableTableField, TablePagination} from "chums-components";
 import numeral from 'numeral';
+import {URL_ORDER_LINK} from "../constants";
 import classNames from 'classnames';
-import {customerKey} from "@/ducks/orders/utils";
-import {OrderTotal, SalesOrderMarginRow} from "@/types/sales-order";
+import {customerKey} from "../ducks/orders/utils";
+import {OrderTotal, SalesOrderMarginRow} from "../types";
 import {SalesOrderType} from "chums-types/src/sales-orders";
 import dayjs from "dayjs";
 import Decimal from "decimal.js";
-import {setSort} from "@/ducks/orders/actions";
-import {useAppDispatch} from "@/app/configureStore";
-import {SortableTable, SortableTableField, TablePagination} from "sortable-tables";
-import ProgressBar from "react-bootstrap/ProgressBar";
-import {selectFilteredList, selectLoading, selectSort} from "@/ducks/orders/selectors";
-
-const URL_ORDER_LINK = '/reports/account/salesorder/?company=chums&salesorderno=:SalesOrderNo&view=margins';
+import {selectFilteredList, selectLoading, selectSort, setSort} from "../ducks/orders";
+import {useAppDispatch} from "../app/configureStore";
 
 const createdBy = ({CreatedBy, b2bUserID, b2bUserName, LastUpdatedBy}: SalesOrderMarginRow) => {
     if (b2bUserID) {
@@ -182,6 +179,8 @@ export default function OrdersList() {
         setPage(0);
         setRowsPerPage(rpp);
     }
+
+
 
 
     return (
