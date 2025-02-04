@@ -1,16 +1,19 @@
 import React, {Fragment, useEffect, useState} from 'react';
 import {useSelector} from 'react-redux';
-import {ProgressBar, SortableTable, SortableTableField, TablePagination} from "chums-components";
 import numeral from 'numeral';
-import {URL_ORDER_LINK} from "../constants";
 import classNames from 'classnames';
-import {customerKey} from "../ducks/orders/utils";
-import {OrderTotal, SalesOrderMarginRow} from "../types";
+import {customerKey} from "@/ducks/orders/utils";
+import {OrderTotal, SalesOrderMarginRow} from "@/types/sales-order";
 import {SalesOrderType} from "chums-types/src/sales-orders";
 import dayjs from "dayjs";
 import Decimal from "decimal.js";
-import {selectFilteredList, selectLoading, selectSort, setSort} from "../ducks/orders";
-import {useAppDispatch} from "../app/configureStore";
+import {useAppDispatch} from "@/app/configureStore";
+import {SortableTable, SortableTableField, TablePagination} from "sortable-tables";
+import {selectFilteredList, selectLoading, selectSort} from "@/ducks/orders/selectors";
+import {ProgressBar} from "react-bootstrap";
+import {setSort} from "@/ducks/orders/actions";
+
+const URL_ORDER_LINK = '/reports/account/salesorder/?company=chums&salesorderno=:SalesOrderNo&view=margins';
 
 const createdBy = ({CreatedBy, b2bUserID, b2bUserName, LastUpdatedBy}: SalesOrderMarginRow) => {
     if (b2bUserID) {
@@ -181,8 +184,6 @@ export default function OrdersList() {
     }
 
 
-
-
     return (
         <>
             {loading && <ProgressBar now={100} striped animated className="mb-1"/>}
@@ -191,7 +192,8 @@ export default function OrdersList() {
                            rowClassName={rowClassName}
                            currentSort={sort}
                            onChangeSort={(sort) => dispatch(setSort(sort))}
-                           tfoot={<OrderListTotal total={totals} hasMore={(page * rowsPerPage + rowsPerPage) < list.length } />}
+                           tfoot={<OrderListTotal total={totals}
+                                                  hasMore={(page * rowsPerPage + rowsPerPage) < list.length}/>}
             />
             <TablePagination page={page} onChangePage={setPage}
                              rowsPerPage={rowsPerPage} rowsPerPageProps={{onChange: rowsPerPageChangeHandler}}
