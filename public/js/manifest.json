@@ -1,6 +1,8 @@
 {
-  "main.js": "/main.fdd60d8b.js",
-  "vendors.js": "/vendors.6571caef.js",
-  "main.fdd60d8b.js.map": "/main.fdd60d8b.js.map",
-  "vendors.6571caef.js.map": "/vendors.6571caef.js.map"
+  "main.js": "/main.a2a047e0.js",
+  "vendors-react.js": "/vendors-react.03e06335.js",
+  "vendors.js": "/vendors.63c47c4f.js",
+  "main.a2a047e0.js.map": "/main.a2a047e0.js.map",
+  "vendors-react.03e06335.js.map": "/vendors-react.03e06335.js.map",
+  "vendors.63c47c4f.js.map": "/vendors.63c47c4f.js.map"
 }

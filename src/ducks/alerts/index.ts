@@ -1,16 +1,11 @@
-import {createAction, createReducer, isRejected} from "@reduxjs/toolkit";
-import {RootState} from "../../app/configureStore";
-import {RejectedAction} from "@reduxjs/toolkit/dist/query/core/buildThunks";
-import {BasicAlert} from "chums-components";
-
-export interface ErrorAlert extends BasicAlert {
-    id: number;
-    count: number;
-}
+import {createReducer, isFulfilled, isRejected} from "@reduxjs/toolkit";
+import {StyledErrorAlert} from "@/src/types/alerts";
+import {addAlert, dismissAlert} from "@/ducks/alerts/actions";
+import {alertSorter} from "@/ducks/alerts/utils";
 
 export interface AlertsState {
     nextId: number;
-    list: ErrorAlert[];
+    list: StyledErrorAlert[];
 }
 
 export const initialAlertsState: AlertsState = {
@@ -18,20 +13,15 @@ export const initialAlertsState: AlertsState = {
     list: [],
 }
 
-export const dismissAlert = createAction<number>('alerts/dismiss');
-export const addAlert = createAction<ErrorAlert>('alerts/addAlert');
-
-export const selectAlerts = (state:RootState) => state.alerts.list;
-
-function isErrorAction(action: RejectedAction<any, any>): action is RejectedAction<any, any> {
-    return action?.meta?.requestStatus === 'rejected';
-}
-
 
 const alertsReducer = createReducer(initialAlertsState, (builder) => {
     builder
         .addCase(dismissAlert, (state, action) => {
-            state.list = state.list.filter(alert => alert.id !== action.payload);
+            if (action.payload.id) {
+                state.list = state.list.filter(alert => alert.id !== action.payload.id).sort(alertSorter);
+            } else if (action.payload.context) {
+                state.list = state.list.filter(alert => alert.context !== action.payload.context).sort(alertSorter);
+            }
         })
         .addCase(addAlert, (state, action) => {
             const [contextAlert] = state.list.filter(alert => action.payload.context !== '' && alert.context === action.payload.context)
@@ -40,36 +30,36 @@ const alertsReducer = createReducer(initialAlertsState, (builder) => {
                 state.list = [
                     ...state.list.filter(alert => action.payload.context !== '' && alert.context === action.payload.context),
                     contextAlert
-                ];
+                ].sort(alertSorter);
             } else {
-                state.list.push({...action.payload, id: state.nextId});
+                state.list = [
+                    ...state.list,
+                    {...action.payload, id: state.nextId}
+                ].sort(alertSorter);
                 state.nextId += 1;
             }
         })
-        .addMatcher(isErrorAction, (state, action) => {
+        .addMatcher(isRejected, (state, action) => {
             const context = action.type.replace('/rejected', '');
-            let [contextAlert] = state.list.filter(alert => alert.context === context);
-            if (!contextAlert) {
-                contextAlert = {id: state.nextId, count: 1, message: action.error.message ?? '', context, color: 'danger'}
-                state.nextId += 1;
+            const contextAlerts = state.list.filter(alert => alert.context === context);
+            const newAlerts: StyledErrorAlert[] = [];
+            if (contextAlerts.length) {
+                contextAlerts[0].count += 1;
             } else {
-                contextAlert.count += 1;
+                newAlerts.push({context, message: action.error.message ?? '', id: state.nextId, count: 1})
+                state.nextId += 1;
             }
             state.list = [
                 ...state.list.filter(alert => alert.context !== context),
-                contextAlert,
-            ];
+                ...contextAlerts,
+                ...newAlerts
+            ].sort(alertSorter)
         })
-        .addDefaultCase((state, action) => {
-            if (isRejected(action) && action.error) {
-                state.list.push({
-                    context: action.type.replace('/rejected', ''),
-                    message: action.error.message ?? '',
-                    id: state.nextId,
-                    count: 1
-                });
-                state.nextId += 1;
-            }
+        .addMatcher(isFulfilled, (state, action) => {
+            const context = action.type.replace('/fulfilled', '');
+            state.list = [
+                ...state.list.filter(alert => alert.context !== context),
+            ].sort(alertSorter)
         })
 });
 

@@ -1,25 +1,19 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useId} from 'react';
 import {useSelector} from 'react-redux';
-import {FormCheck, Input, SpinnerButton} from "chums-components";
-import {useAppDispatch} from "../app/configureStore";
-import {
-    selectHideEDI,
-    selectHidePromo, selectMaxMargin,
-    selectSearch,
-    setSearch,
-    toggleHideEDI,
-    toggleHidePromo
-} from "../ducks/filters";
-import MaxMarginSelect from "../ducks/filters/MaxMarginSelect";
-import {loadOrders, selectLoading} from "../ducks/orders";
+import {useAppDispatch} from "@/app/configureStore";
+import {selectMaxMargin,} from "@/ducks/filters/selectors";
+import MaxMarginSelect from "./MaxMarginSelect";
+import {Button, Col, Row} from "react-bootstrap";
+import {loadOrders} from "@/ducks/orders/actions";
+import FilterEDI from "@/components/FilterEDI";
+import FilterPromo from "@/components/FilterPromo";
+import FilterOrders from "@/components/FilterOrders";
 
 export default function FilterForm() {
     const dispatch = useAppDispatch();
-    const hideEDI = useSelector(selectHideEDI);
-    const hidePromo = useSelector(selectHidePromo);
-    const search = useSelector(selectSearch);
+
     const maxMargin = useSelector(selectMaxMargin);
-    const loading = useSelector(selectLoading);
+    const marginId = useId();
 
     useEffect(() => {
         dispatch(loadOrders(maxMargin));
@@ -30,34 +24,26 @@ export default function FilterForm() {
     }
 
     return (
-        <div className="row g3 align-items-baseline mb-3">
-            <div className="col-auto">
+        <Row gap={3} className="align-items-baseline mb-3">
+            <Col xs="auto" as="label" htmlFor={marginId}>
                 Max Margin %
-            </div>
+            </Col>
             <div className="col-auto">
-                <MaxMarginSelect />
+                <MaxMarginSelect id={marginId} size="sm"/>
             </div>
-            <div className="col-auto">
-                <SpinnerButton type="button" className="btn btn-sm btn-primary" onClick={loadHandler}
-                               spinning={loading}>
-                    Load Orders
-                </SpinnerButton>
-            </div>
+            <Col xs="auto">
+                <Button type="button" variant="primary" onClick={loadHandler} size="sm">Load Orders</Button>
+            </Col>
             <div className="col"/>
             <div className="col-auto">
-                <FormCheck checked={hideEDI} inline={true} type="checkbox"
-                           onChange={(ev) => dispatch(toggleHideEDI(ev.target.checked))}
-                           label="Hide EDI Customers"/>
+                <FilterEDI/>
             </div>
             <div className="col-auto">
-                <FormCheck checked={hidePromo} inline={true} type="checkbox"
-                           onChange={(ev) => dispatch(toggleHidePromo(ev.target.checked))}
-                           label="Hide Promo Customers / CHUMS"/>
+                <FilterPromo/>
             </div>
             <div className="col-auto">
-                <Input type="search" value={search} onChange={(ev) => setSearch(ev.target.value)}
-                       bsSize="sm" placeholder="search"/>
+                <FilterOrders/>
             </div>
-        </div>
+        </Row>
     );
 }

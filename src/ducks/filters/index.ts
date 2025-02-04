@@ -1,5 +1,5 @@
-import {createAction, createReducer} from "@reduxjs/toolkit";
-import {RootState} from "../../app/configureStore";
+import {createReducer} from "@reduxjs/toolkit";
+import {setMaxMargin, setSearch, toggleHideEDI, toggleHidePromo} from "@/ducks/filters/actions";
 
 export interface FiltersState {
     hideEDI: boolean;
@@ -8,22 +8,12 @@ export interface FiltersState {
     search: string;
 }
 
-const initialState:FiltersState = {
+const initialState: FiltersState = {
     hideEDI: true,
     hidePromo: true,
     maxMargin: '0.5',
     search: '',
 }
-
-export const selectMaxMargin = (state:RootState) => state.filters.maxMargin;
-export const selectHidePromo = (state:RootState) => state.filters.hidePromo;
-export const selectHideEDI = (state:RootState) => state.filters.hideEDI;
-export const selectSearch = (state:RootState) => state.filters.search;
-
-export const setMaxMargin = createAction<string>('filters/setMaxMargin');
-export const toggleHideEDI = createAction<boolean|undefined>('filters/toggleHideEDI');
-export const toggleHidePromo = createAction<boolean|undefined>('filters/toggleHidePromo');
-export const setSearch = createAction<string>('filters/setSearch');
 
 const filtersReducer = createReducer(initialState, builder => {
     builder
@@ -34,7 +24,7 @@ const filtersReducer = createReducer(initialState, builder => {
             state.hideEDI = action.payload ?? !state.hideEDI;
         })
         .addCase(toggleHidePromo, (state, action) => {
-           state.hidePromo = action.payload ?? !state.hidePromo;
+            state.hidePromo = action.payload ?? !state.hidePromo;
         })
         .addCase(setSearch, (state, action) => {
             state.search = action.payload;

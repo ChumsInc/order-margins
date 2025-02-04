@@ -1,5 +1,5 @@
-import {SortProps} from "chums-components";
-import {SalesOrderMarginRow} from "../../types";
+import {SortProps} from "chums-types";
+import {SalesOrderMarginRow} from "@/types/sales-order";
 import Decimal from "decimal.js";
 
 export const customerKey = (arg:{ARDivisionNo:string, CustomerNo: string}):string => {

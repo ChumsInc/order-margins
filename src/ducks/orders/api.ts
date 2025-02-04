@@ -1,11 +1,11 @@
-import {SalesOrderMarginResponse, SalesOrderMarginRow} from "../../types";
-import {fetchJSON} from "chums-components";
+import {SalesOrderMarginResponse, SalesOrderMarginRow} from "@/types/sales-order";
+import {fetchJSON} from "chums-ui-utils";
 
 export async function fetchOrders(arg:string|number):Promise<SalesOrderMarginRow[]> {
     try {
         const url = `/api/sales/orders/margins/chums/${encodeURIComponent(arg)}`;
         const res = await fetchJSON<{ orders: SalesOrderMarginResponse[] }>(url, {cache: 'no-cache'})
-        return (res.orders ?? []).map(row => {
+        return (res?.orders ?? []).map(row => {
             return {
                 ...row,
                 isEDI: row.isEDI === 'Y',

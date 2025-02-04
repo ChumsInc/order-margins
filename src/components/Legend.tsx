@@ -1,10 +1,10 @@
 import React from "react";
-import {Alert} from "chums-components";
+import Alert from "react-bootstrap/Alert";
 
 export default function Legend() {
     return (
         <div className="container">
-            <Alert color="info" title="INFO">
+            <Alert variant="info" title="INFO">
                 The cost, revenue and margins on this report are estimates and may change
                 based on production, purchasing, receiving, or any other transaction that
                 affects average costs.

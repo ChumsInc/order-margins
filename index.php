@@ -1,27 +1,16 @@
 <?php
 
-
-/**
- * @package Chums
- * @subpackage ProjectedDemands
- * @author Steve Montgomery
- * @copyright Copyright &copy; 2013, steve
- */
+use chums\ui\WebUI2;
+use chums\user\Groups;
+use chums\ui\CSSOptions;
 
 require_once ("autoload.inc.php");
-require_once ('access.inc.php');
-
-$bodyPath = "/apps/order-margins";
-$title = "Open Order Margins";
-$description = "";
-
-$ui = new WebUI($bodyPath, $title, $description, true, 5);
-$ui->bodyClassName = 'container-fluid';
-$ui->AddCSS("public/styles.css", true);
-$ui->addManifest('public/js/manifest.json');
-$ui->Send();
-/**
- * Changelog:
- */
-
-
+$ui = new WebUI2([
+    'title' => 'Open Order Margins',
+    'bodyClassName' => 'container-fluid',
+    'contentFile' => 'body.inc.php',
+    'requiredRoles' => [Groups::CS, Groups::PRODUCTION, Groups::SALES],
+]);
+$ui->addCSS('public/styles.css', CSSOptions::parse(['useTimestampVersion' => true]))
+    ->addManifestJSON('public/js/manifest.json')
+    ->render();

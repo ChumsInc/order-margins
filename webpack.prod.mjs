@@ -1,13 +1,12 @@
-const {merge} = require('webpack-merge');
-const webpack = require('webpack');
-const common = require('./webpack.common.js');
-const {WebpackManifestPlugin} = require('webpack-manifest-plugin');
-const TerserPlugin = require('terser-webpack-plugin');
-const {CleanWebpackPlugin} = require('clean-webpack-plugin');
-const {BundleAnalyzerPlugin} = require('webpack-bundle-analyzer');
+
+import {merge} from 'webpack-merge';
+import {WebpackManifestPlugin} from 'webpack-manifest-plugin';
+import TerserPlugin from 'terser-webpack-plugin';
+import {BundleAnalyzerPlugin} from 'webpack-bundle-analyzer';
+import common from './webpack.common.mjs';
 
 
-module.exports = merge(common, {
+export default merge(common, {
     mode: 'production',
     devtool: 'source-map',
     optimization: {
@@ -27,12 +26,11 @@ module.exports = merge(common, {
         ],
     },
     output: {
+        clean: true,
         filename: "[name].[contenthash:8].js",
     },
     plugins: [
-        new CleanWebpackPlugin(),
         new WebpackManifestPlugin({}),
-        new BundleAnalyzerPlugin(),
-
+        new BundleAnalyzerPlugin({}),
     ]
 });

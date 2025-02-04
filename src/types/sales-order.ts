@@ -29,11 +29,6 @@ export interface SalesOrderMarginResponse extends Omit<SalesOrderMarginRow, 'isE
     isPromo: number;
 }
 
-export interface FetchOrderProps {
-    company: string;
-    maxMargin: string|number;
-}
-
 export interface OrderTotal {
     OrderTotal: string|number;
     ItemTotal: string|number;
