@@ -8,7 +8,7 @@ import {SalesOrderType} from "chums-types/src/sales-orders";
 import dayjs from "dayjs";
 import Decimal from "decimal.js";
 import {useAppDispatch} from "@/app/configureStore";
-import {SortableTable, SortableTableField, TablePagination} from "sortable-tables";
+import {SortableTable, SortableTableField, TablePagination} from "@chumsinc/sortable-tables";
 import {selectFilteredList, selectLoading, selectSort} from "@/ducks/orders/selectors";
 import {ProgressBar} from "react-bootstrap";
 import {setSort} from "@/ducks/orders/actions";
@@ -82,35 +82,35 @@ const fieldList: SortableTableField<SalesOrderMarginRow>[] = [
         title: 'Order Total',
         sortable: true,
         render: ({OrderTotal}) => numeral(OrderTotal).format('$0,0.00'),
-        className: 'text-end'
+        align: 'end'
     },
     {
         field: 'ItemTotal',
         title: 'Item Total',
         sortable: true,
         render: ({ItemTotal}) => numeral(ItemTotal).format('$0,0.00'),
-        className: 'text-end'
+        align: 'end'
     },
     {
         field: 'CostTotal',
         title: 'Cost Total',
         sortable: true,
         render: ({CostTotal}) => numeral(CostTotal).format('$0,0.00'),
-        className: 'text-end'
+        align: 'end'
     },
     {
         field: 'Revenue',
-        title: 'Revenue',
+        title: 'Profit',
         sortable: true,
         render: ({Revenue}) => numeral(Revenue).format('$0,0.00'),
-        className: 'text-end'
+        align: 'end'
     },
     {
         field: 'Margin',
         title: 'Margin',
         sortable: true,
         render: ({Margin}) => numeral(Margin).format('0.0%'),
-        className: 'text-end'
+        align: 'end'
     },
 ];
 

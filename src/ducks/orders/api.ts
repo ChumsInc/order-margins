@@ -1,5 +1,5 @@
 import {SalesOrderMarginResponse, SalesOrderMarginRow} from "@/types/sales-order";
-import {fetchJSON} from "chums-ui-utils";
+import {fetchJSON} from "@chumsinc/ui-utils";
 
 export async function fetchOrders(arg:string|number):Promise<SalesOrderMarginRow[]> {
     try {

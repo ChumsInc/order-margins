@@ -2,11 +2,11 @@ import {configureStore} from '@reduxjs/toolkit'
 import {combineReducers} from "redux";
 import {TypedUseSelectorHook, useDispatch, useSelector} from "react-redux";
 import {default as filtersReducer} from '../ducks/filters';
-import alertsReducer from "../ducks/alerts";
 import ordersReducer from "../ducks/orders";
+import {alertsSlice} from "@chumsinc/alert-list";
 
 const rootReducer = combineReducers({
-    alerts: alertsReducer,
+    [alertsSlice.reducerPath]: alertsSlice.reducer,
     filters: filtersReducer,
     orders: ordersReducer,
 });
